@@ -8,11 +8,13 @@ function getData(url){
         type:"GET",
         url:url,
         success: function(res){
+            console.log(res)
             dataList = res;
             len = dataList.length;
             control = new root.controlIndex(len);
             root.render(res[0]);
             audio.getAudio(res[0].audio);
+            root.pro.renderAllTime(res[0].duration);
             bindEvent();
         },
         error: function(err){
@@ -28,12 +30,14 @@ function bindEvent(){
         if(audio.status == 'play'){
             rotated(0);
             audio.play()
+            root.pro.start();
         }
         $('.img-box').attr('data-deg', 0)
         $('.img-box').css({
             'transform': 'rotateZ(0deg)',
             'transition': 'none'
         })
+        root.pro.renderAllTime(dataList[index].duration);
     })
     $('.prev').on('click',function(){
         var nowIndex = control.prev();
@@ -49,9 +53,11 @@ function bindEvent(){
             console.log(deg)
             rotated(deg);
             audio.play();
+            root.pro.start();
         }else{
             clearInterval(timer);
             audio.pause();
+            root.pro.stop();
         }
         $('.play').toggleClass('playing');
     })
@@ -69,6 +75,16 @@ function rotated(deg){
         })
     },200)
 
+}
+
+function bindTouch(){
+    $('.slider-point').on('touchstart',function(){
+
+    }).on('touchmove',function(){
+
+    }).on('touchend',function(){
+
+    })
 }
 getData("../mock/data.json");
 
