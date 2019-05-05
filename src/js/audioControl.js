@@ -17,6 +17,10 @@
         getAudio: function(src){
             this.audio.src = src;
             this.audio.load();
+        },
+        playTo: function(time){
+            this.audio.currentTime = time;
+            this.audio.play();
         }
     }
     root.audioManager = new AudioManager();

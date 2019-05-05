@@ -4,6 +4,7 @@
     // 渲染总时间
     function renderAllTime(time) {
         duration = time;
+        lastPer = 0;
         time = formatTime(time);
         $('.all-time').html(time);
     }
@@ -21,7 +22,8 @@
         return m + ':' + s;
     }
     // 渲染左侧时间
-    function start() {
+    function start(p) {
+        lastPer = p === undefined ? lastPer : p;
         startTime = new Date().getTime();
         function frame() {
             var curTime = new Date().getTime();
@@ -53,7 +55,8 @@
     root.pro = {
         renderAllTime: renderAllTime,
         start: start,
-        stop: stop
+        stop: stop,
+        update: update
     }
 
 })(window.Zepto, window.player || (window.player = {}))

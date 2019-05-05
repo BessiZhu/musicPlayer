@@ -16,6 +16,7 @@ function getData(url){
             audio.getAudio(res[0].audio);
             root.pro.renderAllTime(res[0].duration);
             bindEvent();
+            bindTouch();
         },
         error: function(err){
             console.log(err);
@@ -42,10 +43,22 @@ function bindEvent(){
     $('.prev').on('click',function(){
         var nowIndex = control.prev();
         $('body').trigger('play:change', nowIndex);
+        if(audio.status == 'play'){
+            root.pro.start(0);
+        }else{
+            root.pro.update(0);
+            root.pro.stop();
+        }
     })
     $('.next').on('click',function(){
         var nowIndex = control.next();
         $('body').trigger('play:change', nowIndex);
+        if(audio.status == 'play'){
+            root.pro.start(0);
+        }else{
+            root.pro.update(0);
+            root.pro.stop();
+        }
     })
     $('.play').on('click',function(){
         if(audio.status == 'pause'){
@@ -78,12 +91,25 @@ function rotated(deg){
 }
 
 function bindTouch(){
-    $('.slider-point').on('touchstart',function(){
-
-    }).on('touchmove',function(){
-
-    }).on('touchend',function(){
-
+    var left = $(".pro-bottom").offset().left;
+    var width = $(".pro-bottom").offset().width;
+    $('.slider').on('touchstart',function(e){
+        root.pro.stop();
+    }).on('touchmove',function(e){
+        var x = e.changedTouches[0].clientX;
+        var per = (x - left) / width;
+        root.pro.update(per);
+    }).on('touchend',function(e){
+        var x = e.changedTouches[0].clientX;
+        var per = (x - left) / width;
+        if(per >=0 && per<=1){
+            var duration = dataList[control.index].duration;
+            var curTime = per * duration;
+            audio.playTo(curTime);
+            $('.play').addClass('playing');
+            audio.status = 'play'
+            root.pro.start(per);
+        }
     })
 }
 getData("../mock/data.json");
